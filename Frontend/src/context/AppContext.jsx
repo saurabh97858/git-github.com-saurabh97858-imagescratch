@@ -1,90 +1,83 @@
-import { createContext, useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useState } from "react";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import toast from "react-hot-toast";
 
 export const AppContext = createContext();
 
 const AppContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+  const { getToken } = useAuth();
+  const { user } = useUser();
+
+  const [credit, setCredit] = useState(10);
   const [showLogin, setShowLogin] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const [credit, setCredit] = useState(0);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const navigate = useNavigate();
-
-  // Load user credits
   const loadCreditsData = async () => {
     try {
-      if (!user) return;
-      const { data } = await axios.get(backendUrl + "/api/user/credits", {
-        headers: { token },
-        params: { userId: user._id },
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(`${backendUrl}/api/user/credits`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
+      const data = await response.json();
       if (data.success) {
         setCredit(data.credits);
-        setUser(data.user);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Failed to load credits:", error);
       toast.error(error.message);
     }
   };
 
-  // Generate Image
-  const generateImage = async ({ userId, prompt }) => {
+  const generateImage = async ({ prompt, images }) => {
     try {
-      const { data } = await axios.post(
-        backendUrl + "/api/image/generate-image",
-        { userId, prompt },
-        { headers: { token } }
-      );
+      const token = await getToken();
+      if (!token) return toast.error("Login Required!");
 
-      if (data.success) {
-        loadCreditsData();
-        return data.resultImage;
-      } else {
+      console.log("📡 AppContext sending to backend:", {
+        hasPrompt: !!prompt,
+        hasImages: images && images.length > 0,
+        imageCount: images ? images.length : 0
+      });
+
+      const res = await fetch(`${backendUrl}/api/image/generate-image`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ prompt, images }),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
         toast.error(data.message);
-        loadCreditsData();
-        if (data.creditBalance === 0) {
-          navigate("/buy");
-        }
+        return null;
       }
-    } catch (error) {
-      toast.error(error.message);
+
+      setCredit(data.creditBalance);
+      return data.resultImage;
+    } catch (err) {
+      toast.error("Server Error!");
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken("");
-    setUser(null);
-  };
-
-  useEffect(() => {
-    if (token && user) {
+  React.useEffect(() => {
+    if (user) {
       loadCreditsData();
     }
-  }, [token, user]);
+  }, [user]);
 
-  const value = {
-    user,
-    setUser,
-    showLogin,
-    setShowLogin,
-    backendUrl,
-    token,
-    setToken,
-    credit,
-    setCredit,
-    loadCreditsData,
-    logout,
-    generateImage,
-  };
-
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider
+      value={{ user, credit, showLogin, setShowLogin, generateImage, loadCreditsData }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export default AppContextProvider;

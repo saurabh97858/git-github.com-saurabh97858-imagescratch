@@ -8,4 +8,8 @@ export default defineConfig({
     react(),
     tailwindcss(),   // ✅ Tailwind plugin add kiya
   ],
+  server: {
+    host: '0.0.0.0', // Allow network access
+    port: 5173
+  }
 })

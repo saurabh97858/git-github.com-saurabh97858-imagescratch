@@ -53,7 +53,7 @@ export const stepsData = [
       description: 'Instantly download your creation or share it with the world directly from our platform.',
       icon: step_icon_3,
     },
-  ];
+];
 
 export const testimonialsData = [
     {
@@ -98,4 +98,4 @@ export const plans = [
       credits: 5000,
       desc: 'Best for enterprise use.'
     },
-  ]
+]

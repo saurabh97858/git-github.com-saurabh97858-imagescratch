@@ -1,24 +1,14 @@
-import jwt from "jsonwebtoken";
+import { getAuth } from "@clerk/express";
 
-const userAuth = async (req, res, next) => {
-  const { token } = req.headers;
+const userAuth = (req, res, next) => {
+  const { userId } = getAuth(req);
 
-  if (!token) {
-    return res.json({ success: false, message: "Not Authorized. Login Again" });
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
   }
 
-  try {
-    const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (tokenDecode.id) {
-      req.body.userId = tokenDecode.id;
-      next();
-    } else {
-      return res.json({ success: false, message: "Not Authorized. Login Again" });
-    }
-  } catch (error) {
-    res.json({ success: false, message: error.message });
-  }
+  req.userId = userId;
+  next();
 };
 
 export default userAuth;

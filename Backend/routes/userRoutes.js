@@ -1,23 +1,16 @@
-import express from 'express'
+import express from "express";
+import { userCredits, paymentRazorpay, verifyRazorpay } from "../controllers/userController.js";
+import { resetCredits } from "../controllers/creditController.js";
+import clerkAuth from "../middlewares/clerkAuth.js";
 
-import {registerUser, loginUser, userCredits, paymentRazorpay , verifyRazorpay} from '../controllers/userController.js'
-import userAuth from '../middlewares/auth.js'
+const userRouter = express.Router();
 
-const userRouter = express.Router()
+// 🆕 Protected Routes using Clerk
+userRouter.get("/credits", clerkAuth, userCredits);
+userRouter.post("/pay-razor", clerkAuth, paymentRazorpay);
+userRouter.post("/reset-credits", clerkAuth, resetCredits); // Reset credits to 100
 
-userRouter.post('/register',registerUser)
-userRouter.post('/login',loginUser)
-userRouter.get('/credits', userAuth, userCredits)
-userRouter.post('/pay-razor', userAuth, paymentRazorpay)
+// Dummy verify route
+userRouter.post("/verify-razor", verifyRazorpay);
 
-userRouter.post('/verify-razor', verifyRazorpay)
-
-
-export default userRouter
-
-// http: //localhost:4000/api/user/register
-
-// http: //localhost:4000/api/user/login 
-
-
-
+export default userRouter;
