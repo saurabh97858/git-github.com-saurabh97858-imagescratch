@@ -323,7 +323,7 @@ const Result = () => {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="flex flex-col min-h-[90vh] justify-center items-center px-4 py-8"
+      className="flex flex-col min-h-screen justify-center items-center px-4 py-8 pb-24"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}

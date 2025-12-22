@@ -51,6 +51,13 @@ const AppContextProvider = ({ children }) => {
         body: JSON.stringify({ prompt, images }),
       });
 
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await res.text();
+        console.error("Non-JSON Response:", text);
+        throw new Error("Server response was not valid. It might have timed out.");
+      }
+
       const data = await res.json();
 
       if (!data.success) {
@@ -61,7 +68,8 @@ const AppContextProvider = ({ children }) => {
       setCredit(data.creditBalance);
       return data.resultImage;
     } catch (err) {
-      toast.error("Server Error!");
+      console.error(err);
+      toast.error(err.message || "Server Error!");
     }
   };
 
