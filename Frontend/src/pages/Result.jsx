@@ -435,7 +435,7 @@ const Result = () => {
       {!isImageLoaded && (
         <motion.form
           onSubmit={onSubmitHandler}
-          className="w-full max-w-2xl relative z-10"
+          className="w-full max-w-3xl relative z-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -443,69 +443,9 @@ const Result = () => {
           {/* Style Selector */}
           <StyleSelector onSelect={(style) => setInput(prev => prev + style)} />
 
-          <div className={`flex items-center gap-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border-2 p-2 transition-colors ${isDragging ? 'border-blue-500 bg-blue-50 dark:bg-gray-700' : 'border-gray-200 dark:border-gray-700'}`}>
-            {/* Hidden file input */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              className="hidden"
-            />
+          <div className={`flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-white dark:bg-gray-800 md:rounded-full rounded-2xl shadow-lg border-2 p-2 transition-colors ${isDragging ? 'border-blue-500 bg-blue-50 dark:bg-gray-700' : 'border-gray-200 dark:border-gray-700'}`}>
 
-            {/* Gallery Button */}
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-              title="Select images (max 4)"
-            >
-              <FiImage className="text-gray-600 dark:text-gray-300" size={20} />
-            </button>
-
-            {/* Reset Button */}
-            <button
-              type="button"
-              onClick={handleReset}
-              className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-              title="Reset all"
-            >
-              <FiRefreshCw className="text-gray-600 dark:text-gray-300" size={20} />
-            </button>
-
-            {/* Voice Input Button */}
-            <button
-              type="button"
-              onClick={handleVoiceInput}
-              className={`p-3 rounded-full transition-colors ${isListening ? 'bg-red-100 text-red-500 animate-pulse' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
-              title="Voice Input"
-            >
-              <FiMic size={20} />
-            </button>
-
-            {/* Surprise Me Button */}
-            <button
-              type="button"
-              onClick={handleSurpriseMe}
-              className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors text-pink-500"
-              title="Surprise Me!"
-            >
-              <FiBox size={20} />
-            </button>
-
-            {/* Magic Prompt Button */}
-            <button
-              type="button"
-              onClick={handleEnhancePrompt}
-              disabled={enhancing}
-              className={`p-3 rounded-full transition-colors ${enhancing ? 'bg-purple-100 text-purple-500 animate-spin' : 'hover:bg-purple-50 dark:hover:bg-gray-700 text-purple-500'}`}
-              title="Enhance Prompt with AI"
-            >
-              <FiZap size={20} />
-            </button>
-
-            {/* Text Input */}
+            {/* Top Section on Mobile: Text Input */}
             <input
               type="text"
               value={input}
@@ -515,14 +455,80 @@ const Result = () => {
                   ? `${uploadedImages.length} image(s) selected - Describe what to create...`
                   : "Describe what you want to create..."
               }
-              className="flex-1 bg-transparent outline-none px-4 text-gray-800 dark:text-gray-200 placeholder-gray-400"
+              className="flex-1 bg-transparent outline-none px-4 py-3 md:py-0 text-gray-800 dark:text-gray-200 placeholder-gray-400 text-base w-full"
             />
 
-            {/* Generate Button */}
+            {/* Middle Section on Mobile: Tools Toolbar */}
+            <div className="flex items-center justify-between md:justify-start gap-1 md:gap-2 px-2 md:px-0 border-t md:border-t-0 border-gray-100 dark:border-gray-700 pt-2 md:pt-0">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+
+              <div className="flex items-center gap-1 md:gap-2 overflow-x-auto no-scrollbar">
+                {/* Gallery Button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-2 md:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors flex-shrink-0"
+                  title="Select images (max 4)"
+                >
+                  <FiImage className="text-gray-600 dark:text-gray-300" size={20} />
+                </button>
+
+                {/* Reset Button */}
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="p-2 md:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors flex-shrink-0"
+                  title="Reset all"
+                >
+                  <FiRefreshCw className="text-gray-600 dark:text-gray-300" size={20} />
+                </button>
+
+                {/* Voice Input Button */}
+                <button
+                  type="button"
+                  onClick={handleVoiceInput}
+                  className={`p-2 md:p-3 rounded-full transition-colors flex-shrink-0 ${isListening ? 'bg-red-100 text-red-500 animate-pulse' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
+                  title="Voice Input"
+                >
+                  <FiMic size={20} />
+                </button>
+
+                {/* Surprise Me Button */}
+                <button
+                  type="button"
+                  onClick={handleSurpriseMe}
+                  className="p-2 md:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors text-pink-500 flex-shrink-0"
+                  title="Surprise Me!"
+                >
+                  <FiBox size={20} />
+                </button>
+
+                {/* Magic Prompt Button */}
+                <button
+                  type="button"
+                  onClick={handleEnhancePrompt}
+                  disabled={enhancing}
+                  className={`p-2 md:p-3 rounded-full transition-colors flex-shrink-0 ${enhancing ? 'bg-purple-100 text-purple-500 animate-spin' : 'hover:bg-purple-50 dark:hover:bg-gray-700 text-purple-500'}`}
+                  title="Enhance Prompt with AI"
+                >
+                  <FiZap size={20} />
+                </button>
+              </div>
+            </div>
+
+            {/* Bottom Section on Mobile: Generate Button */}
             <button
               type="submit"
               disabled={loading}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-xl md:rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md w-full md:w-auto mt-2 md:mt-0"
             >
               Generate
             </button>
@@ -537,7 +543,7 @@ const Result = () => {
 
           {/* Drag Hint */}
           {uploadedImages.length === 0 && (
-            <p className="text-xs text-center text-gray-400 mt-2 opacity-50">
+            <p className="text-xs text-center text-gray-400 mt-2 opacity-50 hidden md:block">
               Tip: You can drag & drop images anywhere on the screen
             </p>
           )}
@@ -549,7 +555,7 @@ const Result = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex gap-4 flex-wrap justify-center mt-6"
+          className="grid grid-cols-2 md:flex gap-3 md:gap-4 justify-center mt-6 w-full max-w-2xl"
         >
           <button
             onClick={() => {
@@ -557,7 +563,7 @@ const Result = () => {
               setInput("");
               setUploadedImages([]);
             }}
-            className="px-8 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 font-medium"
+            className="col-span-2 md:col-span-1 px-4 md:px-8 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl md:rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 font-medium text-sm md:text-base"
           >
             Generate Another
           </button>
@@ -565,7 +571,7 @@ const Result = () => {
           <button
             onClick={handleRemoveBackground}
             disabled={removingBg}
-            className={`flex items-center gap-2 px-8 py-3 border-2 border-pink-500 text-pink-500 rounded-full hover:bg-pink-50 dark:hover:bg-gray-800 transition-all duration-200 font-medium ${removingBg ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-3 border-2 border-pink-500 text-pink-500 rounded-xl md:rounded-full hover:bg-pink-50 dark:hover:bg-gray-800 transition-all duration-200 font-medium text-sm md:text-base ${removingBg ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {removingBg ? (
               <span className="animate-spin">⏳</span>
@@ -578,7 +584,7 @@ const Result = () => {
           <button
             onClick={handleUpscale}
             disabled={upscaling}
-            className={`flex items-center gap-2 px-8 py-3 border-2 border-blue-500 text-blue-500 rounded-full hover:bg-blue-50 dark:hover:bg-gray-800 transition-all duration-200 font-medium ${upscaling ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-3 border-2 border-blue-500 text-blue-500 rounded-xl md:rounded-full hover:bg-blue-50 dark:hover:bg-gray-800 transition-all duration-200 font-medium text-sm md:text-base ${upscaling ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {upscaling ? (
               <span className="animate-spin">⏳</span>
@@ -591,7 +597,7 @@ const Result = () => {
           <button
             onClick={handleVariations}
             disabled={varying}
-            className={`flex items-center gap-2 px-8 py-3 border-2 border-purple-500 text-purple-500 rounded-full hover:bg-purple-50 dark:hover:bg-gray-800 transition-all duration-200 font-medium ${varying ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-3 border-2 border-purple-500 text-purple-500 rounded-xl md:rounded-full hover:bg-purple-50 dark:hover:bg-gray-800 transition-all duration-200 font-medium text-sm md:text-base ${varying ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {varying ? (
               <span className="animate-spin">⏳</span>
@@ -604,7 +610,7 @@ const Result = () => {
           <a
             href={image}
             download="imagify-creation.png"
-            className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:from-blue-600 hover:to-purple-700 transition-all duration-200 font-medium shadow-md"
+            className="col-span-2 md:col-span-1 flex items-center justify-center gap-2 px-4 md:px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl md:rounded-full hover:from-blue-600 hover:to-purple-700 transition-all duration-200 font-medium shadow-md text-sm md:text-base"
           >
             <FiDownload size={18} />
             Download
