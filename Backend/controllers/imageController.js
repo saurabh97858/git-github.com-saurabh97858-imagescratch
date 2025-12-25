@@ -2,7 +2,7 @@ import axios from "axios";
 import userModel from "../models/userModel.js";
 import imageHistoryModel from "../models/imageHistoryModel.js";
 import FormData from "form-data";
-import { createCanvas, loadImage } from "canvas";
+// import { createCanvas, loadImage } from "canvas"; // Dynamic import used instead to prevent startup crash on Vercel
 
 // Helper function for Gemini Image Generation (text-to-image)
 const generateWithGemini = async (prompt) => {
@@ -68,6 +68,16 @@ const createCollage = async (images) => {
 
     canvasWidth = cols * imageSize;
     canvasHeight = rows * imageSize;
+
+    let createCanvas, loadImage;
+    try {
+      const canvasModule = await import("canvas");
+      createCanvas = canvasModule.createCanvas;
+      loadImage = canvasModule.loadImage;
+    } catch (e) {
+      console.error("Canvas module failed to load:", e.message);
+      throw new Error("Collage generation is not supported in this environment (Canvas missing).");
+    }
 
     const canvas = createCanvas(canvasWidth, canvasHeight);
     const ctx = canvas.getContext("2d");
