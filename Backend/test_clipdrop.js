@@ -2,7 +2,12 @@ import axios from 'axios';
 import FormData from 'form-data';
 import fs from 'fs';
 
-const CLIPDROP_API_KEY = '1e33545c650e2177eb699eaa5b3bca56a30c3c0e162c18eb90468756046cea6821a8494a55c3a2369eadbfc4250fe922';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+const CLIPDROP_API_KEY = process.env.CLIPDROP_API;
+
 
 async function testClipDrop() {
     try {
